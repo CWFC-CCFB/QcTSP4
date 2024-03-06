@@ -10,4 +10,7 @@ test_that("Testing nb rows in photoInterpretedStands", {expect_equal(nrow(QcTSP4
 test_that("Testing nb rows in trees", {expect_equal(nrow(QcTSP4Data$trees), 3919833)})
 test_that("Testing nb rows in studyTrees", {expect_equal(nrow(QcTSP4Data$studyTrees), 355123)})
 
+plotList <- c(700412604, 700412701, 700412702)
 
+selectedTrees <- extractArtemisFormatForMetaModelling(QcTSP4Data, plotList)
+test_that("Testing nb rows in selectedTrees", {expect_equal(nrow(selectedTrees), 211)})

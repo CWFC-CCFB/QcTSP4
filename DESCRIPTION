@@ -1,7 +1,7 @@
 Package: QcTSP4
 Type: Package
 Title: TSP Data from the Fourth Campaign of Quebec Provincial Forest Inventory
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(
     person("Mathieu", "Fortin", email = "mathieu.fortin.re@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6436-2727")))
 Description: This is a clean version of Quebec TSP - Fourth campaign - , which is freely available (see README).
