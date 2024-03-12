@@ -58,7 +58,8 @@ restoreQcTSP4Data <- function() {
 extractArtemisFormatForMetaModelling <- function(QcTSP4Data, plotList) {
   plotInfo <- QcTSP4Data$plots[which(QcTSP4Data$plots$ID_PE %in% plotList), c("ID_PE", "LATITUDE", "LONGITUDE", "DATE_SOND")]
   siteInfo <- QcTSP4Data$sites[which(QcTSP4Data$sites$ID_PE %in% plotList), c("ID_PE", "ALTITUDE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI")]
-  standInfo <- QcTSP4Data$photoInterpretedStands[which(QcTSP4Data$photoInterpretedStands$ID_PE %in% plotList), c("ID_PE", "CL_AGE")]
+  standInfo <- QcTSP4Data$photoInterpretedStands[which(QcTSP4Data$photoInterpretedStands$ID_PE %in% plotList), c("ID_PE", "CL_AGE", "TYPE_ECO")]
+  colnames(standInfo)[3] <- "TYPE_ECO_PHOTO"
   treeInfo <- QcTSP4Data$trees[which(QcTSP4Data$trees$ID_PE %in% plotList), c("ID_PE", "ESSENCE", "CL_DHP", "HAUT_ARBRE", "TIGE_HA")]
   plotInfo <- merge(plotInfo, standInfo, by = "ID_PE")
   output <- merge(merge(plotInfo, siteInfo, by="ID_PE"),
@@ -71,9 +72,9 @@ extractArtemisFormatForMetaModelling <- function(QcTSP4Data, plotList) {
 
 
   output <- output[,c("ID_PE", "LATITUDE", "LONGITUDE", "ALTITUDE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI",
-                      "ESSENCE", "TREESTATUS", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "CL_AGE")]
+                      "ESSENCE", "TREESTATUS", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "TYPE_ECO_PHOTO", "CL_AGE")]
   colnames(output) <- c("PLOT", "LATITUDE", "LONGITUDE", "ALTITUDE", "ECOREGION", "TYPEECO", "DRAINAGE_CLASS",
-                        "SPECIES", "TREESTATUS", "TREEDHPCM", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "STANDAGE")
+                        "SPECIES", "TREESTATUS", "TREEDHPCM", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "STANDTYPEECO", "STANDAGE")
   return(output)
 }
 
