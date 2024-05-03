@@ -27,6 +27,8 @@ sites <- sqlFetch(channel, "STATION_PE") #### 109 713 observations
 photoInterpretedStands <- sqlFetch(channel, "PEE_ORI_SOND") #### 109 713 observations
 trees <- sqlFetch(channel, "DENDRO_ARBRES") #### 3 919 833 observations
 studyTrees <- sqlFetch(channel, "DENDRO_ARBRES_ETUDES") #### 355 123 observations
+saplings <- sqlFetch(channel, "DENDRO_GAULES") #### 459 898 observations
+close(channel)
 
 sort(unique(sites$GUIDE_ECO))
 GUIDE_ECO <- c("1a", "2a", "2b", "2c", "3ab",  "3c", "3d",
@@ -47,5 +49,6 @@ TSP4$sites <- sites
 TSP4$photoInterpretedStands <- photoInterpretedStands
 TSP4$trees <- trees
 TSP4$studyTrees <- studyTrees
+TSP4$saplings <- saplings
 
 saveRDS(TSP4, file = file.path(getwd(),"inst","extdata", "QcTSP4.Rds"), compress = "xz")

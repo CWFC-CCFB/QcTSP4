@@ -51,26 +51,41 @@ restoreQcTSP4Data <- function() {
 #'
 #' Extract plot list for Artemis simulation
 #' @param QcTSP4Data the database that is retrieved through the restoreQcTSP4Data function
-#' @param plotList a vector of integers standing for the plot id to be considered
+#' @param plots a vector of integers standing for the plot id to be considered
 #' @return a data.frame object formatted for Capsis Web API
 #'
 #' @export
-extractArtemisFormatForMetaModelling <- function(QcTSP4Data, plotList) {
+extractArtemisFormatForMetaModelling <- function(QcTSP4Data, plots) {
+  plotList <- unique(plots) ### make sure there is no duplicate
   plotInfo <- QcTSP4Data$plots[which(QcTSP4Data$plots$ID_PE %in% plotList), c("ID_PE", "LATITUDE", "LONGITUDE", "DATE_SOND")]
   siteInfo <- QcTSP4Data$sites[which(QcTSP4Data$sites$ID_PE %in% plotList), c("ID_PE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI")]
   standInfo <- QcTSP4Data$photoInterpretedStands[which(QcTSP4Data$photoInterpretedStands$ID_PE %in% plotList), c("ID_PE", "CL_AGE", "TYPE_ECO")]
   colnames(standInfo)[3] <- "TYPE_ECO_PHOTO"
   treeInfo <- QcTSP4Data$trees[which(QcTSP4Data$trees$ID_PE %in% plotList), c("ID_PE", "ESSENCE", "CL_DHP", "HAUT_ARBRE", "TIGE_HA")]
+  saplings <- QcTSP4Data$saplings
+  saplings$HAUT_ARBRE <- NA
+  saplingInfo <- saplings[which(saplings$ID_PE %in% plotList), c("ID_PE", "ESSENCE", "CL_DHP", "HAUT_ARBRE", "TIGE_HA")]
   plotInfo <- merge(plotInfo, standInfo, by = "ID_PE")
-  output <- merge(merge(plotInfo, siteInfo, by="ID_PE"),
+  plotInfo <- merge(plotInfo, siteInfo, by="ID_PE")
+  output_tree <- merge(plotInfo,
                   treeInfo,
                   by = "ID_PE")
+  output_saplings <- merge(plotInfo,
+                          saplingInfo,
+                          by = "ID_PE")
+  output <- rbind(output_tree, output_saplings)
+  output <- output[order(output$ID_PE, -output$CL_DHP),]
   output$ANNEE_SOND <- as.integer(format(output$DATE_SOND, "%Y"))
   output$TREEFREQ <- output$TIGE_HA / 25
   output$TREESTATUS <- 10
   output$TREEHEIGHT <- output$HAUT_ARBRE * .1
 
-
+  outputPlots <- unique(output$ID_PE)
+  missingPlots <- setdiff(plotList, outputPlots)
+  if (length(missingPlots) > 0) {
+    message("These plots have no saplings and trees:", paste(missingPlots, collapse = ","))
+    message("They have been discarded from the resulting data.frame object.")
+  }
   output <- output[,c("ID_PE", "LATITUDE", "LONGITUDE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI",
                       "ESSENCE", "TREESTATUS", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "TYPE_ECO_PHOTO", "CL_AGE")]
   colnames(output) <- c("PLOT", "LATITUDE", "LONGITUDE", "ALTITUDE", "SUBDOMAIN", "ECOREGION", "TYPEECO", "DRAINAGE_CLASS",

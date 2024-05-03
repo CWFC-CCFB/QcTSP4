@@ -4,12 +4,12 @@
 \alias{extractArtemisFormatForMetaModelling}
 \title{Extract plot list for Artemis simulation}
 \usage{
-extractArtemisFormatForMetaModelling(QcTSP4Data, plotList)
+extractArtemisFormatForMetaModelling(QcTSP4Data, plots)
 }
 \arguments{
 \item{QcTSP4Data}{the database that is retrieved through the restoreQcTSP4Data function}
 
-\item{plotList}{a vector of integers standing for the plot id to be considered}
+\item{plots}{a vector of integers standing for the plot id to be considered}
 }
 \value{
 a data.frame object formatted for Capsis Web API
