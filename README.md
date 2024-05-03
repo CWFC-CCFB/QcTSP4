@@ -35,9 +35,9 @@ This will create a list object called QcTSP4Data in the global environment. This
 - plots: the list of plots 
 - sites: some site information recorded in those plots 
 - photoInterpretedStands: some site information recorded through photo-interpretation 
-- trees: the talled trees 
+- trees: the tallied trees 
 - studyTrees: the study trees (a subsample of trees) 
-
+- saplings: the tallied saplings
 
 Further information on the fields and their values can be found at 
 
