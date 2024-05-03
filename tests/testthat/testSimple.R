@@ -25,3 +25,8 @@ firstPlotGreaterThan7m <- plots[which(plots$TYPE_PE == "PET 7 mètres et +"), "I
 plotList <- c(319700401, 700412604) # one of them is a 4-7m plot
 selectedTrees <- extractArtemisFormatForMetaModelling(QcTSP4Data, plotList)
 test_that("Testing nb rows in selectedTrees", {expect_equal(nrow(selectedTrees), 119)})
+
+plotList <- c(700412604, 504656201,603562101,401960602,401960601,319703404) ## only the first has trees and saplings, the others are empty plots
+selectedTrees <- extractArtemisFormatForMetaModelling(QcTSP4Data, plotList)
+test_that("Testing nb rows in selectedTrees", {expect_equal(nrow(selectedTrees), 116)})
+

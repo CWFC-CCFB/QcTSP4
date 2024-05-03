@@ -74,18 +74,34 @@ extractArtemisFormatForMetaModelling <- function(QcTSP4Data, plots) {
                           saplingInfo,
                           by = "ID_PE")
   output <- rbind(output_tree, output_saplings)
+  outputPlots <- unique(output$ID_PE)
+
+  missingPlots <- setdiff(plotList, outputPlots)
+  if (length(missingPlots) > 0) {
+    message("These plots have no saplings and no trees: ", paste(missingPlots, collapse = ", "))
+    message("We will add a fake sapling to make sure they are properly imported in Artemis-2009.")
+    fakeSaplings <- NULL
+    for (mPlot in missingPlots) {
+      fakeSaplings <- rbind(fakeSaplings, data.frame(ID_PE = mPlot, ESSENCE = "SAB", CL_DHP = as.integer(2), HAUT_ARBRE = NA, TIGE_HA = as.integer(25)))
+    }
+    output_MissingSaplings <- merge(plotInfo,
+                                   fakeSaplings,
+                                   by = "ID_PE")
+    output <- rbind(output, output_MissingSaplings)
+  }
+
+  outputPlots <- unique(output$ID_PE)
+  missingPlots <- setdiff(plotList, outputPlots)
+  if (length(missingPlots) > 0) {
+    stop("Apparently, there are still some plots with no saplings and no trees: ", paste(missingPlots, collapse = ", "))
+  }
+
   output <- output[order(output$ID_PE, -output$CL_DHP),]
   output$ANNEE_SOND <- as.integer(format(output$DATE_SOND, "%Y"))
   output$TREEFREQ <- output$TIGE_HA / 25
   output$TREESTATUS <- 10
   output$TREEHEIGHT <- output$HAUT_ARBRE * .1
 
-  outputPlots <- unique(output$ID_PE)
-  missingPlots <- setdiff(plotList, outputPlots)
-  if (length(missingPlots) > 0) {
-    message("These plots have no saplings and trees:", paste(missingPlots, collapse = ","))
-    message("They have been discarded from the resulting data.frame object.")
-  }
   output <- output[,c("ID_PE", "LATITUDE", "LONGITUDE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI",
                       "ESSENCE", "TREESTATUS", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "TYPE_ECO_PHOTO", "CL_AGE")]
   colnames(output) <- c("PLOT", "LATITUDE", "LONGITUDE", "ALTITUDE", "SUBDOMAIN", "ECOREGION", "TYPEECO", "DRAINAGE_CLASS",
