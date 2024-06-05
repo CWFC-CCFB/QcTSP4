@@ -45,5 +45,5 @@ https://diffusion.mffp.gouv.qc.ca/Diffusion/DonneeGratuite/Foret/DONNEES_FOR_ECO
 
 The inventory protocol is available at
 
-https://mffp.gouv.qc.ca/documents/forets/inventaire/Norme-PET.pdf663-973607f28062
+https://mffp.gouv.qc.ca/documents/forets/inventaire/Norme-PET.pdf
 
