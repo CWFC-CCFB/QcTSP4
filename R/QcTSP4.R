@@ -55,7 +55,7 @@ restoreQcTSP4Data <- function() {
 #' @return a data.frame object formatted for Capsis Web API
 #'
 #' @export
-extractArtemisFormatForMetaModelling <- function(QcTSP4Data, plots) {
+extractArtemis2009FormatFromTSP4ForMetaModelling <- function(QcTSP4Data, plots) {
   plotList <- unique(plots) ### make sure there is no duplicate
   plotInfo <- QcTSP4Data$plots[which(QcTSP4Data$plots$ID_PE %in% plotList), c("ID_PE", "LATITUDE", "LONGITUDE", "DATE_SOND")]
   siteInfo <- QcTSP4Data$sites[which(QcTSP4Data$sites$ID_PE %in% plotList), c("ID_PE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI")]
