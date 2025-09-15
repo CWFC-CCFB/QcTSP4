@@ -61,7 +61,7 @@ extractArtemis2009FormatFromTSP4ForMetaModelling <- function(QcTSP4Data, plots) 
   siteInfo <- QcTSP4Data$sites[which(QcTSP4Data$sites$ID_PE %in% plotList), c("ID_PE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI")]
   standInfo <- QcTSP4Data$photoInterpretedStands[which(QcTSP4Data$photoInterpretedStands$ID_PE %in% plotList), c("ID_PE", "CL_AGE", "TYPE_ECO")]
   colnames(standInfo)[3] <- "TYPE_ECO_PHOTO"
-  treeInfo <- QcTSP4Data$trees[which(QcTSP4Data$trees$ID_PE %in% plotList), c("ID_PE", "ESSENCE", "CL_DHP", "HAUT_ARBRE", "TIGE_HA")]
+  treeInfo <- QcTSP4Data$trees[which(QcTSP4Data$trees$ID_PE %in% plotList), c("ID_PE", "ETAT", "ESSENCE", "CL_DHP", "HAUT_ARBRE", "TIGE_HA")]
   saplings <- QcTSP4Data$saplings
   saplings$HAUT_ARBRE <- NA
   saplingInfo <- saplings[which(saplings$ID_PE %in% plotList), c("ID_PE", "ESSENCE", "CL_DHP", "HAUT_ARBRE", "TIGE_HA")]
@@ -73,6 +73,7 @@ extractArtemis2009FormatFromTSP4ForMetaModelling <- function(QcTSP4Data, plots) 
   output_saplings <- merge(plotInfo,
                           saplingInfo,
                           by = "ID_PE")
+  output_saplings$ETAT<-10                #######Rajoute un etat 10 pour les gaules, elles sont toutes vivantes
   output <- rbind(output_tree, output_saplings)
   outputPlots <- unique(output$ID_PE)
 
@@ -82,7 +83,7 @@ extractArtemis2009FormatFromTSP4ForMetaModelling <- function(QcTSP4Data, plots) 
     message("We will add a fake sapling to make sure they are properly imported in Artemis-2009.")
     fakeSaplings <- NULL
     for (mPlot in missingPlots) {
-      fakeSaplings <- rbind(fakeSaplings, data.frame(ID_PE = mPlot, ESSENCE = "SAB", CL_DHP = as.integer(2), HAUT_ARBRE = NA, TIGE_HA = as.integer(25)))
+      fakeSaplings <- rbind(fakeSaplings, data.frame(ID_PE = mPlot, ETAT=10, ESSENCE = "SAB", CL_DHP = as.integer(2), HAUT_ARBRE = NA, TIGE_HA = as.integer(25)))
     }
     output_MissingSaplings <- merge(plotInfo,
                                    fakeSaplings,
@@ -99,13 +100,13 @@ extractArtemis2009FormatFromTSP4ForMetaModelling <- function(QcTSP4Data, plots) 
   output <- output[order(output$ID_PE, -output$CL_DHP),]
   output$ANNEE_SOND <- as.integer(format(output$DATE_SOND, "%Y"))
   output$TREEFREQ <- output$TIGE_HA / 25
-  output$TREESTATUS <- 10
+  #output$TREESTATUS <- 10 #Etat était automatiquement fixé à 10 car pas d'état dans PET3
   output$TREEHEIGHT <- output$HAUT_ARBRE * .1
 
-  output <- output[,c("ID_PE", "LATITUDE", "LONGITUDE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI",
-                      "ESSENCE", "TREESTATUS", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "TYPE_ECO_PHOTO", "CL_AGE")]
+  output <- output[,c("ID_PE", "LATITUDE", "LONGITUDE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI", "ETAT",
+                      "ESSENCE", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "TYPE_ECO_PHOTO", "CL_AGE")]
   colnames(output) <- c("PLOT", "LATITUDE", "LONGITUDE", "ALTITUDE", "SUBDOMAIN", "ECOREGION", "TYPEECO", "DRAINAGE_CLASS",
-                        "SPECIES", "TREESTATUS", "TREEDHPCM", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "STANDTYPEECO", "STANDAGE")
+                        "TREESTATUS","SPECIES", "TREEDHPCM", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "STANDTYPEECO", "STANDAGE")
   return(output)
 }
 
@@ -124,7 +125,7 @@ extractNatura2014FormatFromTSP4ForMetaModelling <- function(QcTSP4Data, stratumP
   siteInfo <- QcTSP4Data$sites[which(QcTSP4Data$sites$ID_PE %in% plotList), c("ID_PE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI")]
   standInfo <- QcTSP4Data$photoInterpretedStands[which(QcTSP4Data$photoInterpretedStands$ID_PE %in% plotList), c("ID_PE", "CL_AGE", "TYPE_ECO")]
   colnames(standInfo)[3] <- "TYPE_ECO_PHOTO"
-  treeInfo <- QcTSP4Data$trees[which(QcTSP4Data$trees$ID_PE %in% plotList), c("ID_PE", "ESSENCE", "CL_DHP","HAUT_ARBRE", "TIGE_HA")]
+  treeInfo <- QcTSP4Data$trees[which(QcTSP4Data$trees$ID_PE %in% plotList), c("ID_PE", "ETAT", "ESSENCE", "CL_DHP","HAUT_ARBRE", "TIGE_HA")]
   plotInfo <- merge(plotInfo, standInfo, by = "ID_PE")
   plotInfo <- merge(plotInfo, siteInfo, by="ID_PE")
   names(stratumPlots)<-c("stratum","ID_PE")
@@ -151,17 +152,17 @@ extractNatura2014FormatFromTSP4ForMetaModelling <- function(QcTSP4Data, stratumP
     message("They will not be simulated with Natura ")
   }
 
-  output <- output [,c(2,1,3:16)]
+  output <- output [,c(2,1,3:17)]
   output <- output[order(output$stratum, output$ID_PE, -output$CL_DHP),]
   output$ANNEE_SOND <- as.integer(format(output$DATE_SOND, "%Y"))
   output$TREEFREQ <- output$TIGE_HA / 25
-  output$TREESTATUS <- 10
+  #output$TREESTATUS <- 10   #Etat était automatiquement fixé à 10 car pas d'état dans PET3
   output$TREEHEIGHT <- output$HAUT_ARBRE * .1
 
-  output <- output[,c("stratum","ID_PE", "LATITUDE", "LONGITUDE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI",
-                      "ESSENCE", "TREESTATUS", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "TYPE_ECO_PHOTO", "CL_AGE")]
+  output <- output[,c("stratum","ID_PE", "LATITUDE", "LONGITUDE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI","ETAT",
+                      "ESSENCE", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "TYPE_ECO_PHOTO", "CL_AGE")]
   colnames(output) <- c("STRATUM","PLOT", "LATITUDE", "LONGITUDE", "ALTITUDE", "SUBDOMAIN", "ECOREGION", "TYPEECO", "DRAINAGE_CLASS",
-                        "SPECIES", "TREESTATUS", "TREEDHPCM", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "STANDTYPEECO", "STANDAGE")
+                        "TREESTATUS","SPECIES", "TREEDHPCM", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "STANDTYPEECO", "STANDAGE")
 
   studyTrees <- studyTrees [,c(2,1,3:7)]
   colnames(studyTrees) <- c("STRATUM","PLOT", "SPECIES", "TREECLASS", "TREEDHPCM",  "TREEHEIGHT", "TREEAGE")

@@ -15,6 +15,8 @@ plots <- c(700412604, 700412701, 700412702)
 selectedTrees <- extractArtemis2009FormatFromTSP4ForMetaModelling(QcTSP4Data, plots)
 selectedTrees <- selectedTrees[which(selectedTrees$TREEDHPCM >= 9),]
 test_that("Testing nb rows in selectedTrees", {expect_equal(nrow(selectedTrees), 211)})
+test_that("Testing nb rows ofliving trees in selectedTrees",
+          {expect_equal(nrow(selectedTrees[which(selectedTrees$TREESTATUS %in% c(10,12)),]), 206)})### 6 trees with a status of dead
 
 plots <- QcTSP4Data$plots
 unique(plots$TYPE_PE)
@@ -39,6 +41,8 @@ stratumplot<-data.frame("stratum"=stratum,"plots"=plots)
 ResultNat <- extractNatura2014FormatFromTSP4ForMetaModelling(QcTSP4Data, stratumplot)
 selectedTrees <- ResultNat$trees
 test_that("Testing nb rows in selectedTrees", {expect_equal(nrow(selectedTrees), 211)})
+test_that("Testing nb rows ofliving trees in selectedTrees",
+          {expect_equal(nrow(selectedTrees[which(selectedTrees$TREESTATUS %in% c(10,12)),]), 206)})### 6 trees with a status of dead
 studyTrees<- ResultNat$studyTrees
 test_that("Testing nb rows in studyTrees", {expect_equal(nrow(studyTrees), 9)})
 
