@@ -1,7 +1,7 @@
 Package: QcTSP4
 Type: Package
 Title: TSP Data from the Fourth Campaign of Quebec Provincial Forest Inventory
-Version: 2017.11.13-1.0.6
+Version: 2017.11.13-1.0.8
 Authors@R: c(
     person("Mathieu", "Fortin", email = "mathieu.fortin.re@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6436-2727")),
     person("His Majesty the King in right of Canada", role=c("cph")))
