@@ -125,7 +125,7 @@ extractNatura2014FormatFromTSP4ForMetaModelling <- function(QcTSP4Data, stratumP
   siteInfo <- QcTSP4Data$sites[which(QcTSP4Data$sites$ID_PE %in% plotList), c("ID_PE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI")]
   standInfo <- QcTSP4Data$photoInterpretedStands[which(QcTSP4Data$photoInterpretedStands$ID_PE %in% plotList), c("ID_PE", "CL_AGE", "TYPE_ECO")]
   colnames(standInfo)[3] <- "TYPE_ECO_PHOTO"
-  treeInfo <- QcTSP4Data$trees[which(QcTSP4Data$trees$ID_PE %in% plotList), c("ID_PE", "ETAT", "ESSENCE", "CL_DHP","HAUT_ARBRE", "TIGE_HA")]
+  treeInfo <- QcTSP4Data$trees[which(QcTSP4Data$trees$ID_PE %in% plotList & QcTSP4Data$trees$ETAT %in% c(10,12,30,32,40,42,50,52)), c("ID_PE", "ETAT", "ESSENCE", "CL_DHP","HAUT_ARBRE", "TIGE_HA")]
   plotInfo <- merge(plotInfo, standInfo, by = "ID_PE")
   plotInfo <- merge(plotInfo, siteInfo, by="ID_PE")
   names(stratumPlots)<-c("stratum","ID_PE")

@@ -40,7 +40,7 @@ stratum<-c("Strate1","Strate1","Strate2")
 stratumplot<-data.frame("stratum"=stratum,"plots"=plots)
 ResultNat <- extractNatura2014FormatFromTSP4ForMetaModelling(QcTSP4Data, stratumplot)
 selectedTrees <- ResultNat$trees
-test_that("Testing nb rows in selectedTrees", {expect_equal(nrow(selectedTrees), 211)})
+test_that("Testing nb rows in selectedTrees", {expect_equal(nrow(selectedTrees), 206)})
 test_that("Testing nb rows ofliving trees in selectedTrees",
           {expect_equal(nrow(selectedTrees[which(selectedTrees$TREESTATUS %in% c(10,12)),]), 206)})### 6 trees with a status of dead
 studyTrees<- ResultNat$studyTrees
@@ -56,7 +56,7 @@ stratum<-c("Strate1","Strate2")
 stratumplot<-data.frame("stratum"=stratum,"plots"=plots)
 ResultNat <- extractNatura2014FormatFromTSP4ForMetaModelling(QcTSP4Data, stratumplot)
 selectedTrees <- ResultNat$trees
-test_that("Testing nb rows in selectedTrees", {expect_equal(nrow(selectedTrees), 104)})
+test_that("Testing nb rows in selectedTrees", {expect_equal(nrow(selectedTrees), 103)})
 test_that("Testing nb stratum selectedTrees", {expect_equal(length(unique(selectedTrees$STRATUM)), 1)})###No study trees in stratum 2
 studyTrees<- ResultNat$studyTrees
 test_that("Testing nb rows in studyTrees", {expect_equal(nrow(studyTrees), 6)})
