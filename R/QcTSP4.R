@@ -52,14 +52,18 @@ restoreQcTSP4Data <- function() {
 #' Extract plot list for Artemis simulation
 #' @param QcTSP4Data the database that is retrieved through the restoreQcTSP4Data function
 #' @param plots a vector of integers standing for the plot id to be considered
-#' @param version a character string identifying the version of the model to be used either "Artemis2009" or "Artemis2014"
+#' @param format a character string identifying the intended use, either "WebAPI" or "RPackage"
 #' @return a data.frame object formatted for Capsis Web API
 #' @examples
 #' \dontrun{
 #'  extractArtemisFormatFromTSP4(QcTSP4Data=Data, plots= c(700412604, 504656201), version="Artemis2014")}
 #'
 #' @export
-extractArtemisFormatFromTSP4<- function(QcTSP4Data, plots, version="Artemis2009") {
+extractArtemisFormatFromTSP4<- function(QcTSP4Data, plots, format="WebAPI") {
+  if (!format %in% c("WebAPI", "RPackage")) {
+    stop("The format argument should be one of these:", c("WebAPI", "RPackage"))
+  }
+
   plotList <- unique(plots) ### make sure there is no duplicate
   plotInfo <- QcTSP4Data$plots[which(QcTSP4Data$plots$ID_PE %in% plotList), c("ID_PE", "LATITUDE", "LONGITUDE", "DATE_SOND")]
   siteInfo <- QcTSP4Data$sites[which(QcTSP4Data$sites$ID_PE %in% plotList), c("ID_PE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI")]
@@ -107,26 +111,18 @@ extractArtemisFormatFromTSP4<- function(QcTSP4Data, plots, version="Artemis2009"
   output$TREEFREQ <- output$TIGE_HA / 25
   #output$TREESTATUS <- 10 #Etat était automatiquement fixé à 10 car pas d'état dans PET3
   output$TREEHEIGHT <- output$HAUT_ARBRE * .1
+  output$Veg_Pot<-substr(output$Type_Eco,1,3)
 
+  output <- output[,c("ID_PE","NO_ARBRE", "LATITUDE", "LONGITUDE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI", "ETAT",
+                      "ESSENCE", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "TYPE_ECO_PHOTO", "CL_AGE", "Veg_Pot")]
 
-  if (version=="Artemis2009"){
-    output <- output[,c("ID_PE", "LATITUDE", "LONGITUDE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI", "ETAT",
-                        "ESSENCE", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "TYPE_ECO_PHOTO", "CL_AGE")]
-
-    colnames(output) <- c("PLOT", "LATITUDE", "LONGITUDE", "ALTITUDE", "SUBDOMAIN", "ECOREGION", "TYPEECO", "DRAINAGE_CLASS",
-                          "TREESTATUS", "SPECIES",  "TREEDHPCM", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "STANDTYPEECO", "STANDAGE")
-  }
-
-  if (version=="Artemis2014"){
-    output <- output[,c("ID_PE","NO_ARBRE", "LATITUDE", "LONGITUDE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI", "ETAT",
-                        "ESSENCE", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "TYPE_ECO_PHOTO", "CL_AGE")]
-
+  if (format=="WebAPI"){
+    colnames(output) <- c("PLOT", "OrigTreeID", "LATITUDE", "LONGITUDE", "ALTITUDE", "SUBDOMAIN", "ECOREGION", "TYPEECO", "DRAINAGE_CLASS", "TREESTATUS",
+                          "SPECIES",  "TREEDHPCM", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "STANDTYPEECO", "STANDAGE", "Veg_Pot")
+  } else if (format=="RPackage"){
     colnames(output) <- c("PlacetteID","OrigTreeID", "Latitude", "Longitude", "Altitude", "Sdom_Bio", "Reg_Eco", "Type_Eco", "Cl_Drai","Etat",
-                          "Espece", "DHPcm", "Nombre", "Hauteur", "Annee", "Type_Eco_Photo", "Age")
-    output$Veg_Pot<-substr(output$Type_Eco,1,3)
-
+                          "Espece", "DHPcm", "Nombre", "Hauteur", "Annee", "Type_Eco_Photo", "Age", "Veg_Pot")
   }
-
 
   return(output)
 }
