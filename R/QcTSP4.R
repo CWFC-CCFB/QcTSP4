@@ -56,7 +56,7 @@ restoreQcTSP4Data <- function() {
 #' @return a data.frame object formatted for Capsis Web API
 #' @examples
 #' \dontrun{
-#'  extractArtemisFormatFromTSP4(QcTSP4Data=Data, plots= c(700412604, 504656201), version="Artemis2014")}
+#'  extractArtemisFormatFromTSP4(QcTSP4Data=Data, plots= c(700412604, 504656201), format="WebAPI")}
 #'
 #' @export
 extractArtemisFormatFromTSP4<- function(QcTSP4Data, plots, format="WebAPI") {
@@ -92,7 +92,7 @@ extractArtemisFormatFromTSP4<- function(QcTSP4Data, plots, format="WebAPI") {
     message("We will add a fake sapling to make sure they are properly imported in Artemis-2009.")
     fakeSaplings <- NULL
     for (mPlot in missingPlots) {
-      fakeSaplings <- rbind(fakeSaplings, data.frame(ID_PE = mPlot, ETAT=10, ESSENCE = "SAB", CL_DHP = as.integer(2), HAUT_ARBRE = NA, TIGE_HA = as.integer(25)))
+      fakeSaplings <- rbind(fakeSaplings, data.frame(ID_PE = mPlot, ETAT=10, NO_ARBRE = NA, ESSENCE = "SAB", CL_DHP = as.integer(2), HAUT_ARBRE = NA, TIGE_HA = as.integer(25)))
     }
     output_MissingSaplings <- merge(plotInfo,
                                    fakeSaplings,
@@ -111,7 +111,7 @@ extractArtemisFormatFromTSP4<- function(QcTSP4Data, plots, format="WebAPI") {
   output$TREEFREQ <- output$TIGE_HA / 25
   #output$TREESTATUS <- 10 #Etat était automatiquement fixé à 10 car pas d'état dans PET3
   output$TREEHEIGHT <- output$HAUT_ARBRE * .1
-  output$Veg_Pot<-substr(output$Type_Eco,1,3)
+  output$Veg_Pot<-substr(output$TYPE_ECO,1,3)
 
   output <- output[,c("ID_PE","NO_ARBRE", "LATITUDE", "LONGITUDE", "ALTITUDE", "SDOMAINE", "GUIDE_ECO", "TYPE_ECO", "CL_DRAI", "ETAT",
                       "ESSENCE", "CL_DHP", "TREEFREQ", "TREEHEIGHT", "ANNEE_SOND", "TYPE_ECO_PHOTO", "CL_AGE", "Veg_Pot")]

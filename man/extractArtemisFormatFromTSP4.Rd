@@ -4,14 +4,14 @@
 \alias{extractArtemisFormatFromTSP4}
 \title{Extract plot list for Artemis simulation}
 \usage{
-extractArtemisFormatFromTSP4(QcTSP4Data, plots, version = "Artemis2009")
+extractArtemisFormatFromTSP4(QcTSP4Data, plots, format = "WebAPI")
 }
 \arguments{
 \item{QcTSP4Data}{the database that is retrieved through the restoreQcTSP4Data function}
 
 \item{plots}{a vector of integers standing for the plot id to be considered}
 
-\item{version}{a character string identifying the version of the model to be used either "Artemis2009" or "Artemis2014"}
+\item{format}{a character string identifying the intended use, either "WebAPI" or "RPackage"}
 }
 \value{
 a data.frame object formatted for Capsis Web API
@@ -21,6 +21,6 @@ Extract plot list for Artemis simulation
 }
 \examples{
 \dontrun{
- extractArtemisFormatFromTSP4(QcTSP4Data=Data, plots= c(700412604, 504656201), version="Artemis2014")}
+ extractArtemisFormatFromTSP4(QcTSP4Data=Data, plots= c(700412604, 504656201), format="WebAPI")}
 
 }
