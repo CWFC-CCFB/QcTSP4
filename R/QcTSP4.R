@@ -89,7 +89,7 @@ extractArtemisFormatFromTSP4<- function(QcTSP4Data, plots, format="WebAPI") {
   missingPlots <- setdiff(plotList, outputPlots)
   if (length(missingPlots) > 0) {
     message("These plots have no saplings and no trees: ", paste(missingPlots, collapse = ", "))
-    message("We will add a fake sapling to make sure they are properly imported in Artemis-2009.")
+    message("We will add a fake sapling to make sure they are properly imported in Artemis.")
     fakeSaplings <- NULL
     for (mPlot in missingPlots) {
       fakeSaplings <- rbind(fakeSaplings, data.frame(ID_PE = mPlot, ETAT=10, NO_ARBRE = NA, ESSENCE = "SAB", CL_DHP = as.integer(2), HAUT_ARBRE = NA, TIGE_HA = as.integer(25)))
